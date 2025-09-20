@@ -1,23 +1,19 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
 
 android {
-    namespace = "com.example.movieapp"
+    namespace = "com.example.bookmarks"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.movieapp"
         minSdk = 24
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -30,14 +26,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_18
-        targetCompatibility = JavaVersion.VERSION_18
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "18"
-    }
-    buildFeatures {
-        compose = true
+        jvmTarget = "11"
     }
 }
 
@@ -69,12 +62,4 @@ dependencies {
 
     //Kotlin Coroutines
     implementation(libs.kotlinx.coroutines.android)
-//
-//    // Networking
-//    implementation(libs.retrofit)
-//    implementation(libs.converter.gson)
-//    implementation(libs.logging.interceptor)
-//    //room
-//    implementation(libs.androidx.room.runtime)
-//    ksp(libs.androidx.room.compiler)
 }

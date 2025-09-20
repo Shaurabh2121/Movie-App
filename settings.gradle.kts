@@ -16,9 +16,15 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        gradlePluginPortal()
     }
 }
 
 rootProject.name = "Movie App"
 include(":app")
- 
+include(":core-domain")
+include(":core-network")
+include(":core-database")
+include(":feature:movie-list")
+include(":feature:movie-detail")
+include(":feature:bookmarks")
