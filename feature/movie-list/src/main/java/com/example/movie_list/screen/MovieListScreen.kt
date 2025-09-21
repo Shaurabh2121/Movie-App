@@ -31,6 +31,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -39,6 +40,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,6 +64,7 @@ import com.example.movie_list.viewmodel.MovieListViewModel
 import com.example.movie_list.viewmodel.SortOption
 import com.example.movie_list.viewmodel.UiState
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieListScreen(
    viewModel: MovieListViewModel = hiltViewModel(),
@@ -76,27 +79,22 @@ fun MovieListScreen(
 
    var showSortDialog by remember { mutableStateOf(false) }
    val keyboardController = LocalSoftwareKeyboardController.current
+
    Column(
       modifier = Modifier
          .fillMaxSize()
-         .padding(16.dp)
    ) {
-      Spacer(modifier = Modifier.height(16.dp))
-      // Top App Bar
-      Row(
-         modifier = Modifier.fillMaxWidth(),
-         horizontalArrangement = Arrangement.SpaceBetween,
-         verticalAlignment = Alignment.CenterVertically
-      ) {
-         Text(
-            text = "Movies",
-            style = MaterialTheme.typography.headlineMedium
-         )
-
-         Row {
-            IconButton(onClick = { onBookmarksClick() }) {
+      TopAppBar(
+         title = {
+            Text(
+               text = "Movies",
+               style = MaterialTheme.typography.headlineMedium
+            )
+         },
+         actions = {
+            IconButton(onClick = onBookmarksClick) {
                Icon(
-                  imageVector = Icons.Default.FavoriteBorder,
+                  imageVector = Icons.Default.Favorite,
                   contentDescription = "View Bookmarks",
                   tint = Color.Red
                )
@@ -106,84 +104,90 @@ fun MovieListScreen(
                Image(
                   painter = painterResource(R.drawable.sort),
                   contentDescription = "Sort",
-                  modifier = Modifier.size(24.dp)
+                  modifier = Modifier.size(24.dp),
+                  colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(Color.Red)
                )
             }
          }
-      }
-
-      Spacer(modifier = Modifier.height(16.dp))
-
-      OutlinedTextField(
-         value = searchQuery,
-         onValueChange = viewModel::updateSearchQuery,
-         label = { Text("Search movies...") },
-         leadingIcon = {
-            Icon(
-               imageVector = Icons.Default.Search,
-               contentDescription = "Search"
+      )
+      Column(
+         modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+      ) {
+         OutlinedTextField(
+            value = searchQuery,
+            onValueChange = viewModel::updateSearchQuery,
+            label = { Text("Search movies...") },
+            leadingIcon = {
+               Icon(
+                  imageVector = Icons.Default.Search,
+                  contentDescription = "Search"
+               )
+            },
+            trailingIcon = {
+               if (searchQuery.isNotEmpty()) {
+                  IconButton(onClick = { viewModel.updateSearchQuery("") }) {
+                     Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Clear search"
+                     )
+                  }
+               }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(focusedTextColor = MaterialTheme.colorScheme.primary),
+            keyboardOptions = KeyboardOptions.Default.copy(
+               imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+               onDone = {
+                  keyboardController?.hide()
+               }
             )
-         },
-         trailingIcon = {
-            if (searchQuery.isNotEmpty()) {
-               IconButton(onClick = { viewModel.updateSearchQuery("") }) {
-                  Icon(
-                     imageVector = Icons.Default.Close,
-                     contentDescription = "Clear search"
-                  )
+         )
+
+         Spacer(modifier = Modifier.height(16.dp))
+
+         when (isLoading) {
+            is UiState.Error -> {
+               Column(
+                  modifier = Modifier.fillMaxSize(),
+                  horizontalAlignment = Alignment.CenterHorizontally,
+                  verticalArrangement = Arrangement.Center
+               ) {
+                  Text("Error: ${(isLoading as UiState.Error).message}", color = Color.Red)
+                  Spacer(modifier = Modifier.height(8.dp))
+                  Button(onClick = { viewModel.fetchData() }) {
+                     Text("Retry")
+                  }
                }
             }
-         },
-         modifier = Modifier.fillMaxWidth(),
-         colors = OutlinedTextFieldDefaults.colors(focusedTextColor = MaterialTheme.colorScheme.primary),
-         keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Done
-         ),
-         keyboardActions = KeyboardActions(
-            onDone = {
-               keyboardController?.hide()
+
+            UiState.Loading -> {
+               Box(
+                  modifier = Modifier.fillMaxSize(),
+                  contentAlignment = Alignment.Center
+               ) {
+                  CircularProgressIndicator()
+               }
             }
-         )
-      )
 
-      Spacer(modifier = Modifier.height(16.dp))
-
-      when (isLoading) {
-          is UiState.Error -> {
-             Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-             ) {
-                Text("Error: ${(isLoading as UiState.Error).message}", color = Color.Red)
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = { viewModel.fetchData() }) {
-                   Text("Retry")
-                }
-             }
-          }
-          UiState.Loading -> {
-             Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-             ) {
-                CircularProgressIndicator()
-             }
-          }
-          UiState.Success -> {
-             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-             ) {
-                items(movies) { movie ->
-                   MovieItem(
-                      movie = movie,
-                      isBookmarked = bookmarkStates[movie.id] ?: false,
-                      onClick = { onMovieClick(movie.id) },
-                      onBookmarkClick = { viewModel.toggleBookmark(movie) }
-                   )
-                }
-             }
-          }
+            UiState.Success -> {
+               LazyColumn(
+                  verticalArrangement = Arrangement.spacedBy(8.dp)
+               ) {
+                  items(movies) { movie ->
+                     MovieItem(
+                        movie = movie,
+                        isBookmarked = bookmarkStates[movie.id] ?: false,
+                        onClick = { onMovieClick(movie.id) },
+                        onBookmarkClick = { viewModel.toggleBookmark(movie) }
+                     )
+                  }
+               }
+            }
+         }
       }
    }
 
