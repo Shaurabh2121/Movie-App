@@ -21,23 +21,22 @@ class MovieDetailViewModel @Inject constructor(private val getMovieDetailsUseCas
     private val _movie = mutableStateOf<MovieDTO?>(null)
     val movie: State<MovieDTO?> = _movie
 
-    private val _isLoading = mutableStateOf(false)
-    val isLoading: State<Boolean> = _isLoading
+    private val _isLoading = mutableStateOf<UiState>(UiState.Loading)
+    val isLoading: State<UiState> = _isLoading
 
     private val _isBookmarked = mutableStateOf(false)
     val isBookmarked: State<Boolean> = _isBookmarked
 
     fun loadMovieDetails(movieId: String) {
         viewModelScope.launch {
-            _isLoading.value = true
+            _isLoading.value = UiState.Loading
             try {
                 val movieDetails = getMovieDetailsUseCase(movieId)
                 _movie.value = movieDetails
                 _isBookmarked.value = isMovieBookmarkedUseCase(movieId)
+                _isLoading.value = if (movieDetails == null) UiState.Error("Something went wrong") else UiState.Success
             } catch (e: Exception) {
-                // Handle error
-            } finally {
-                _isLoading.value = false
+                _isLoading.value = UiState.Error(e.message ?: "Unknown error")
             }
         }
     }
@@ -54,4 +53,9 @@ class MovieDetailViewModel @Inject constructor(private val getMovieDetailsUseCas
             }
         }
     }
+}
+sealed class UiState(){
+    object Loading: UiState()
+    data class Error(val message: String): UiState()
+    object Success: UiState()
 }
