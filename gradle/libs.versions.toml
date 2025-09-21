@@ -17,6 +17,11 @@ converterGson = "2.9.0"
 kotlinxCoroutinesAndroid = "1.7.3"
 lifecycleViewmodelKtx = "2.7.0"
 roomRuntime = "2.8.0"
+mockitoCore = "5.10.0"
+mockitoKotlin = "5.2.1"
+kotlinxCoroutinesTest = "1.7.3"
+coreTesting = "2.2.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,6 +55,12 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -75,12 +75,10 @@ dependencies {
 
     //Kotlin Coroutines
     implementation(libs.kotlinx.coroutines.android)
-//
-//    // Networking
-//    implementation(libs.retrofit)
-//    implementation(libs.converter.gson)
-//    implementation(libs.logging.interceptor)
-//    //room
-//    implementation(libs.androidx.room.runtime)
-//    ksp(libs.androidx.room.compiler)
+
+    // Testing
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.core.testing)
 }
