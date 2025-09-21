@@ -42,7 +42,12 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":core-database"))
+    implementation(project(":core-domain"))
+    implementation(project(":core-network"))
+    implementation(project(":feature:movie-list"))
+    implementation(project(":feature:movie-detail"))
+    implementation(project(":feature:bookmarks"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -58,6 +63,7 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation(libs.navigation.compose)
 
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
