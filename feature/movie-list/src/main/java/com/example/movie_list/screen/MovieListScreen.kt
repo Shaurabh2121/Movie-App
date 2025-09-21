@@ -33,6 +33,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -119,7 +120,8 @@ fun MovieListScreen(
                contentDescription = "Search"
             )
          },
-         modifier = Modifier.fillMaxWidth()
+         modifier = Modifier.fillMaxWidth(),
+         colors = OutlinedTextFieldDefaults.colors(focusedTextColor = MaterialTheme.colorScheme.primary)
       )
 
       Spacer(modifier = Modifier.height(16.dp))

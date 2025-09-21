@@ -56,7 +56,7 @@ class MovieListViewModel @Inject constructor(
                 loadBookmarkStates(movieList)
                 applyFiltersAndSort()
                 if (movieList.isEmpty()){
-                    _isLoading.value = UiState.Error("No movies found")
+                    _isLoading.value = UiState.Error("Something went wrong")
                 }else{
                     _isLoading.value = UiState.Success
                 }
