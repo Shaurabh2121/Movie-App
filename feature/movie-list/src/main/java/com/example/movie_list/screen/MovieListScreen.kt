@@ -18,10 +18,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
@@ -47,7 +49,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -71,7 +75,7 @@ fun MovieListScreen(
    val bookmarkStates by viewModel.bookmarkStates
 
    var showSortDialog by remember { mutableStateOf(false) }
-
+   val keyboardController = LocalSoftwareKeyboardController.current
    Column(
       modifier = Modifier
          .fillMaxSize()
@@ -120,8 +124,26 @@ fun MovieListScreen(
                contentDescription = "Search"
             )
          },
+         trailingIcon = {
+            if (searchQuery.isNotEmpty()) {
+               IconButton(onClick = { viewModel.updateSearchQuery("") }) {
+                  Icon(
+                     imageVector = Icons.Default.Close,
+                     contentDescription = "Clear search"
+                  )
+               }
+            }
+         },
          modifier = Modifier.fillMaxWidth(),
-         colors = OutlinedTextFieldDefaults.colors(focusedTextColor = MaterialTheme.colorScheme.primary)
+         colors = OutlinedTextFieldDefaults.colors(focusedTextColor = MaterialTheme.colorScheme.primary),
+         keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Done
+         ),
+         keyboardActions = KeyboardActions(
+            onDone = {
+               keyboardController?.hide()
+            }
+         )
       )
 
       Spacer(modifier = Modifier.height(16.dp))
