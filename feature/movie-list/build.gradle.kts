@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
@@ -25,16 +26,21 @@ android {
             )
         }
     }
+    buildFeatures{
+        compose = true
+    }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_18
+        targetCompatibility = JavaVersion.VERSION_18
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "18"
     }
 }
 
 dependencies {
+    implementation(project(":core-domain"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -54,6 +60,8 @@ dependencies {
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+    implementation(libs.hilt.compose.navigation)
+
 
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -61,4 +69,6 @@ dependencies {
 
     //Kotlin Coroutines
     implementation(libs.kotlinx.coroutines.android)
+
+    implementation(libs.coil.compose)
 }
