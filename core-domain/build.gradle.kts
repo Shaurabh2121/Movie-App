@@ -48,4 +48,10 @@ dependencies {
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+
+    // Testing
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.core.testing)
 }
